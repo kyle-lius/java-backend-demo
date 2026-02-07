@@ -84,13 +84,6 @@ spring:
 ### 产品管理接口
 - **GET /api/product/{id}** - 根据ID查询产品
 - **GET /api/product/all** - 查询所有产品
-- **GET /api/product/page** - 分页查询产品
-- **GET /api/product/search** - 按条件搜索产品
-- **POST /api/product** - 新增产品
-- **PUT /api/product** - 更新产品
-- **DELETE /api/product/{id}** - 删除产品（逻辑删除）
-- **PUT /api/product/{id}/enable** - 上架产品
-- **PUT /api/product/{id}/disable** - 下架产品
 
 ### 订单管理接口
 - **GET /api/order/all** - 查询所有订单
