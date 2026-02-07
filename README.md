@@ -93,34 +93,14 @@ spring:
 - **PUT /api/product/{id}/disable** - 下架产品
 
 ### 订单管理接口
-- **GET /api/order/{id}** - 根据ID查询订单
-- **GET /api/order/no/{orderNo}** - 根据订单号查询订单
-- **GET /api/order/user/{userId}** - 根据用户ID查询订单
 - **GET /api/order/all** - 查询所有订单
-- **GET /api/order/page** - 分页查询订单
-- **GET /api/order/search** - 按条件搜索订单
-- **POST /api/order** - 创建订单
-- **PUT /api/order/{orderNo}/cancel** - 取消订单
-- **PUT /api/order/{orderNo}/pay** - 支付订单
-- **PUT /api/order/{orderNo}/ship** - 发货订单
-- **PUT /api/order/{orderNo}/complete** - 完成订单
+- **POST /api/order/create** - 创建订单
 
-### 系统日志接口
-- **GET /api/logs** - 获取所有日志
-- **GET /api/logs/page** - 分页查询日志
-- **GET /api/logs/module/{module}** - 根据模块查询日志
-- **GET /api/logs/type/{operationType}** - 根据操作类型查询日志
-- **DELETE /api/logs/clear** - 清空所有日志
-
-### 认证接口
-- **POST /api/auth/login** - 用户登录
-- **POST /api/auth/register** - 用户注册
-- **GET /api/auth/profile** - 获取当前登录用户信息
-- **POST /api/auth/logout** - 退出登录
 
 ### 请求示例
+### 创建用户
 ```json
-// POST /api/users 创建用户
+// POST /api/users
 {
     "username": "testuser",
     "password": "123456",
@@ -135,6 +115,86 @@ spring:
     "code": 200,
     "message": "success",
     "data": {}
+}
+```
+
+### 产品列表
+```json
+// GET /api/product/all
+{}
+```
+### 响应格式
+```
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "iPhone 15",
+            "description": "最新款苹果手机",
+            "price": 5999.00,
+            "stock": 100,
+            "category": "手机",
+            "imageUrl": null,
+            "status": 1,
+            "createTime": "2026-02-06T16:45:20",
+            "updateTime": "2026-02-06T16:45:20"
+        }
+    ],
+    "success": true,
+    "count": 1
+}
+```
+
+### 获取产品信息
+```json
+// GET /api/product/{id}
+```
+
+### 响应格式
+```
+{
+    "data": {
+        "id": 1,
+        "name": "Gingham shirt 10",
+        "description": "Loose-fitting shirt in a cotton blend. Lapel collar and long sleeves with buttoned cuffs. Front button closure.",
+        "price": 5999.00,
+        "stock": 95,
+        "category": "手套",
+        "imageUrl": "https://vgjxh8g2f7b2sc78-89325797681.shopifypreview.com/cdn/shop/files/12_bb32d7f3-ba39-45f7-9ba1-6b679b8a95fe.jpg?v=1764044468&width=1800",
+        "status": 1,
+        "createTime": "2026-02-06T16:45:20",
+        "updateTime": "2026-02-07T17:15:07"
+    },
+    "success": true
+}
+```
+
+### 创建订单
+```json
+// POST /api/order/create
+{
+    "userId": 1,
+    "shippingAddress": "海淀区万寿路甲 15 号七区 10 号楼二单元 402 号",
+    "receiverName": "尹业金",
+    "receiverPhone": "13333333333",
+    "items": [
+        {
+            "productId": 1,
+            "quantity": 1
+        }
+    ]
+}
+```
+### 响应格式
+```json
+{
+    "data": {
+        "orderNo": "ORD17704557073932975",
+        "orderId": 12,
+        "totalPrice": 5999.00
+    },
+    "success": true,
+    "message": "订单创建成功"
 }
 ```
 
