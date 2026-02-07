@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 用户数据访问层映射文件 -->
+<mapper namespace="com.example.backenddemo.mapper.UserMapper">
+
+    <!-- 用户实体结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.backenddemo.entity.User">
+        <id column="id" property="id"/>              <!-- 用户ID，主键 -->
+        <result column="username" property="username"/>  <!-- 用户名 -->
+        <result column="password" property="password"/>  <!-- 密码 -->
+        <result column="email" property="email"/>        <!-- 邮箱 -->
+        <result column="phone" property="phone"/>        <!-- 手机号 -->
+        <result column="status" property="status"/>      <!-- 状态 -->
+        <result column="create_time" property="createTime"/>  <!-- 创建时间 -->
+        <result column="update_time" property="updateTime"/>  <!-- 更新时间 -->
+    </resultMap>
+
+    <!-- 用户表基本字段列表 -->
+    <sql id="Base_Column_List">
+        id, username, password, email, phone, status, create_time, update_time
+    </sql>
+
+    <!-- 根据用户ID查询用户信息 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据用户名查询用户信息 -->
+    <select id="selectByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE username = #{username}
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 插入新用户 -->
+    <insert id="insert" parameterType="com.example.backenddemo.entity.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (
+            username, password, email, phone, status, create_time, update_time
+        ) VALUES (
+            #{username}, #{password}, #{email}, #{phone}, #{status}, #{createTime}, #{updateTime}
+        )
+    </insert>
+
+    <!-- 更新用户信息 -->
+    <update id="update" parameterType="com.example.backenddemo.entity.User">
+        UPDATE user
+        SET username = #{username},
+            password = #{password},
+            email = #{email},
+            phone = #{phone},
+            status = #{status},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据用户ID删除用户 -->
+    <delete id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM user
+        WHERE id = #{id}
+    </delete>
+</mapper>

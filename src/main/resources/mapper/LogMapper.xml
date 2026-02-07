@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 日志数据访问层映射文件 -->
+<mapper namespace="com.example.backenddemo.mapper.LogMapper">
+
+    <!-- 日志实体结果映射 -->
+    <resultMap id="BaseResultMap" type="com.example.backenddemo.entity.Log">
+        <id column="id" property="id"/>                           <!-- 日志ID，主键 -->
+        <result column="operation_type" property="operationType"/>  <!-- 操作类型 -->
+        <result column="module" property="module"/>               <!-- 操作模块 -->
+        <result column="description" property="description"/>     <!-- 操作描述 -->
+        <result column="user_id" property="userId"/>              <!-- 用户ID -->
+        <result column="user_name" property="userName"/>          <!-- 用户名 -->
+        <result column="ip_address" property="ipAddress"/>        <!-- IP地址 -->
+        <result column="method" property="method"/>               <!-- 请求方法 -->
+        <result column="url" property="url"/>                     <!-- 请求URL -->
+        <result column="params" property="params"/>               <!-- 请求参数 -->
+        <result column="result" property="result"/>               <!-- 返回结果 -->
+        <result column="execution_time" property="executionTime"/> <!-- 执行时间 -->
+        <result column="exception" property="exception"/>         <!-- 异常信息 -->
+        <result column="create_time" property="createTime"/>      <!-- 创建时间 -->
+    </resultMap>
+
+    <!-- 日志表基本字段列表 -->
+    <sql id="Base_Column_List">
+        id, operation_type, module, description, user_id, user_name, ip_address, 
+        method, url, params, result, execution_time, exception, create_time
+    </sql>
+
+    <!-- 根据ID查询日志 -->
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM log
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询所有日志 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM log
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 分页查询日志 -->
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM log
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 根据模块查询日志 -->
+    <select id="selectByModule" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM log
+        WHERE module = #{module}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 根据操作类型查询日志 -->
+    <select id="selectByOperationType" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM log
+        WHERE operation_type = #{operationType}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 插入日志 -->
+    <insert id="insert" parameterType="com.example.backenddemo.entity.Log" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO log (
+            operation_type, module, description, user_id, user_name, ip_address,
+            method, url, params, result, execution_time, exception, create_time
+        ) VALUES (
+            #{operationType}, #{module}, #{description}, #{userId}, #{userName}, #{ipAddress},
+            #{method}, #{url}, #{params}, #{result}, #{executionTime}, #{exception}, NOW()
+        )
+    </insert>
+
+    <!-- 批量插入日志 -->
+    <insert id="batchInsert">
+        INSERT INTO log (
+            operation_type, module, description, user_id, user_name, ip_address,
+            method, url, params, result, execution_time, exception, create_time
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+                #{item.operationType}, #{item.module}, #{item.description}, #{item.userId}, #{item.userName}, #{item.ipAddress},
+                #{item.method}, #{item.url}, #{item.params}, #{item.result}, #{item.executionTime}, #{item.exception}, NOW()
+            )
+        </foreach>
+    </insert>
+
+    <!-- 清空日志表 -->
+    <delete id="deleteAll">
+        DELETE FROM log
+    </delete>
+
+    <!-- 根据时间范围删除日志 -->
+    <delete id="deleteByTimeRange">
+        DELETE FROM log
+        WHERE create_time BETWEEN #{startTime} AND #{endTime}
+    </delete>
+</mapper>
