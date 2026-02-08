@@ -2,6 +2,7 @@ package com.example.backenddemo.controller;
 
 import com.example.backenddemo.entity.Order;
 import com.example.backenddemo.entity.OrderItem;
+import com.example.backenddemo.entity.OrderWithoutId;
 import com.example.backenddemo.service.OrderService;
 //import com.example.backenddemo.util.JwtValidationHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,13 +91,13 @@ public class OrderController {
     }
 
     /**
-     * 查询所有订单
+     * 查询所有订单（不包含ID字段）
      */
     @GetMapping("/all")
     public Map<String, Object> getAllOrders() {
         Map<String, Object> result = new HashMap<>();
         try {
-            List<Order> orders = orderService.getAllOrders();
+            List<OrderWithoutId> orders = orderService.getAllOrdersWithoutId();
             result.put("success", true);
             result.put("data", orders);
             result.put("count", orders.size());
@@ -108,7 +109,7 @@ public class OrderController {
     }
 
     /**
-     * 分页查询订单
+     * 分页查询订单（不包含ID字段）
      */
     @GetMapping("/page")
     public Map<String, Object> getOrdersByPage(
@@ -116,7 +117,7 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int size) {
         Map<String, Object> result = new HashMap<>();
         try {
-            List<Order> orders = orderService.getOrdersByPage(page, size);
+            List<OrderWithoutId> orders = orderService.getOrdersByPageWithoutId(page, size);
             int totalCount = orderService.getOrderCount();
             result.put("success", true);
             result.put("data", orders);
@@ -132,7 +133,7 @@ public class OrderController {
     }
 
     /**
-     * 按条件搜索订单
+     * 按条件搜索订单（不包含ID字段）
      */
     @GetMapping("/search")
     public Map<String, Object> searchOrders(
@@ -141,7 +142,7 @@ public class OrderController {
             @RequestParam(required = false) Integer orderStatus) {
         Map<String, Object> result = new HashMap<>();
         try {
-            List<Order> orders = orderService.searchOrders(orderNo, userId, orderStatus);
+            List<OrderWithoutId> orders = orderService.searchOrdersWithoutId(orderNo, userId, orderStatus);
             result.put("success", true);
             result.put("data", orders);
             result.put("count", orders.size());

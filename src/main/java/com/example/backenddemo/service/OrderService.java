@@ -4,6 +4,7 @@ import com.example.backenddemo.entity.*;
 import com.example.backenddemo.mapper.OrderItemMapper;
 import com.example.backenddemo.mapper.OrderMapper;
 import com.example.backenddemo.mapper.ProductMapper;
+import com.example.backenddemo.util.OrderNoGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,9 @@ public class OrderService {
     
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private OrderNoGenerator orderNoGenerator;
 
     /**
      * 根据ID查询订单
@@ -47,25 +51,34 @@ public class OrderService {
     }
 
     /**
-     * 查询所有订单
+     * 查询所有订单（不包含ID字段）
      */
-    public List<Order> getAllOrders() {
-        return orderMapper.selectAll();
+    public List<OrderWithoutId> getAllOrdersWithoutId() {
+        List<Order> orders = orderMapper.selectAll();
+        return orders.stream()
+                .map(OrderWithoutId::fromOrder)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     /**
-     * 分页查询订单
+     * 分页查询订单（不包含ID字段）
      */
-    public List<Order> getOrdersByPage(int page, int size) {
+    public List<OrderWithoutId> getOrdersByPageWithoutId(int page, int size) {
         int offset = (page - 1) * size;
-        return orderMapper.selectByPage(offset, size);
+        List<Order> orders = orderMapper.selectByPage(offset, size);
+        return orders.stream()
+                .map(OrderWithoutId::fromOrder)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     /**
-     * 按条件搜索订单
+     * 按条件搜索订单（不包含ID字段）
      */
-    public List<Order> searchOrders(String orderNo, Long userId, Integer orderStatus) {
-        return orderMapper.selectByCondition(orderNo, userId, orderStatus);
+    public List<OrderWithoutId> searchOrdersWithoutId(String orderNo, Long userId, Integer orderStatus) {
+        List<Order> orders = orderMapper.selectByCondition(orderNo, userId, orderStatus);
+        return orders.stream()
+                .map(OrderWithoutId::fromOrder)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     /**
@@ -113,7 +126,7 @@ public class OrderService {
         }
 
         // 生成订单号
-        String orderNo = generateOrderNo();
+        String orderNo = orderNoGenerator.generateOrderNo("NORMAL");
 
         // 创建订单
         Order order = new Order();
